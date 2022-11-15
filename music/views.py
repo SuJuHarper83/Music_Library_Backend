@@ -20,7 +20,7 @@ from .serializer import SongSerializer
 # Responds with the newly created song object.
 
 @api_view (['GET', 'POST'])
-def SongList(request):
+def song_list(request):
     if request.method == 'GET': #200 OK
         song = Song.objects.all()
     elif request.method == 'POST': #201 Created
@@ -46,18 +46,18 @@ def SongList(request):
 # Returns a 204 status code.
 
 @api_view (['GET', 'PUT', 'DELETE']) 
-def SongDetail(request, pk):
+def song_detail(request, pk):
     song = get_object_or_404(Song, pk=pk)
     if request.method == 'GET': #200 OK
-        serializer = SongSerializer(Song);
+        serializer = SongSerializer(song);
         return Response(serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'PUT': #specific product ID, #200 OK
         serializer = SongSerializer(song, data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer.save();
         return Response(serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'DELETE': #204 code
-        song.delete()
+        song.delete();
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
