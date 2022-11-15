@@ -1,6 +1,10 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
+from django.shortcuts import get_object_or_404
+from django.views.generic import DetailView
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Song
@@ -32,6 +36,30 @@ def song_list(request):
     serializer = SongSerializer(song, many=True)
 
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+def song_like(request, pk):
+    song = get_object_or_404(Song, id=request.POST.get('song id'))
+    if song.likes.filter(id=request.user.id).exists():
+        song.likes.remove(request.user)
+    else:
+        song.likes.add(request.user)
+
+    return HttpResponseRedirect(reverse('song detail', args=[str(pk)]))
+
+class SongDetailView(DetailView):
+    model = Song
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+
+        likes_connected = get_object_or_404(Song, id=self.kwargs['pk'])
+        liked = False
+        if likes_connected.likes.filter(id=self.request.user.id).exists():
+            liked = True
+        data['number of likes'] = likes_connected.number_of_likes()
+        data['song is liked'] = liked
+        return data
+
 
 
 # (5 points) As a developer, I want to create a PUT endpoint that does the following things:
@@ -67,4 +95,6 @@ def song_detail(request, pk):
 # BONUS
 # (5 points) As a developer, I want to add the ability to “like” a song through the web API and 
 # have the number of likes saved in the database with the song.
+
+
 
