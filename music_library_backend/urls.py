@@ -15,10 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from music import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/music/', include ('music.urls')),
-    path('api/music/<int:pk>/')
+    path('admin/', admin.site.urls), #PW: Password
+    path('api/music/', include('music.urls')),
 ]

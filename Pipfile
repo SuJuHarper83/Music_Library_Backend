@@ -8,6 +8,8 @@ django = "*"
 djangorestframework = "*"
 mysql-connector-python = "*"
 django-cors-headers = "*"
+django-rest-framework = "*"
+tzdata = "*"
 
 [dev-packages]
 
