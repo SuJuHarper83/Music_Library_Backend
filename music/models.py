@@ -9,7 +9,7 @@ class Song(models.Model):
     album = models.CharField(max_length=255)
     release_date = models.DateField()
     genre = models.CharField(max_length=255)
-    likes = models.ManyToManyField(User, related_name="Song_Like", blank=True)
+    likes = models.ManyToManyField(User, default=0, related_name="Song_Like", blank=True)
 
     def number_of_likes(self):
         return self.likes.count()
