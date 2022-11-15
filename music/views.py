@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from rest_framework.decorators import APIView
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Song
@@ -19,11 +19,11 @@ from .serializer import SongSerializer
 # Returns a 201 status code.
 # Responds with the newly created song object.
 
-@APIView (['GET', 'POST'])
+@api_view (['GET', 'POST'])
 def SongList(request):
-    if request.method == "GET": #200 OK
+    if request.method == 'GET': #200 OK
         song = Song.objects.all()
-    elif request.method == "POST": #201 Created
+    elif request.method == 'POST': #201 Created
         serializer = SongSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -31,7 +31,7 @@ def SongList(request):
 
     serializer = SongSerializer(song, many=True)
 
-    return Response(serializer.data)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 # (5 points) As a developer, I want to create a PUT endpoint that does the following things:
@@ -45,17 +45,17 @@ def SongList(request):
 # Accepts a value from the request’s URL. (The id of the song to delete).
 # Returns a 204 status code.
 
-@APIView (['GET', 'PUT', 'DELETE']) 
+@api_view (['GET', 'PUT', 'DELETE']) 
 def SongDetail(request, pk):
     song = get_object_or_404(Song, pk=pk)
     if request.method == 'GET': #200 OK
-        serializer = SongSerializer(song);
-        return Response(serializer.data)
+        serializer = SongSerializer(Song);
+        return Response(serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'PUT': #specific product ID, #200 OK
         serializer = SongSerializer(song, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'DELETE': #204 code
         song.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
